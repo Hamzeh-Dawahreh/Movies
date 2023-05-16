@@ -27,7 +27,9 @@ app.get("/", (req, res) => {
       // Handle the API response data
       const data = response.data.results;
       res.json(data);
+      console.log(response.data);
     })
+
     .catch((error) => {
       // Handle any errors
       console.error(error);
