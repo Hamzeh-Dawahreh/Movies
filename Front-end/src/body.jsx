@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const MyComponent = () => {
-  const [movie, setMovie] = useState(null);
+  const [movies, setMovies] = useState([]);
 
   useEffect(() => {
     // Make the HTTP request to the server when the component mounts
@@ -10,7 +10,7 @@ const MyComponent = () => {
       .get("http://localhost:5000")
       .then((response) => {
         // Handle the response data
-        setMovie(response.data);
+        setMovies(response.data);
       })
       .catch((error) => {
         // Handle any errors
@@ -25,31 +25,37 @@ const MyComponent = () => {
       <br />
       <div className="container mx-auto py-8">
         <div className="max-w-lg mx-auto bg-white rounded-lg shadow-lg">
-          <div className="p-6">
-            {movie ? (
-              <div className="movie-card">
+          <div className="wrapper">
+            {movies.map((movie) => (
+              <div className="card" style={{ width: "18rem" }} key={movie.id}>
                 <img
-                  src={movie.poster_path}
+                  className="card-img-top"
+                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                   alt={movie.title}
-                  className="mb-4 rounded"
                 />
-                <h2 className="text-2xl font-bold mb-2">{movie.title}</h2>
-                <p className="text-gray-600">{movie.overview}</p>
-                <p className="text-gray-600">
-                  Release Date: {movie.release_date}
-                </p>
-                <p className="text-gray-600">
-                  Genres: {movie.genres.map((genre) => genre.name).join(", ")}
-                </p>
-                <p className="text-gray-600">
-                  Runtime: {movie.runtime} minutes
-                </p>
-                <p className="text-gray-600">Rating: {movie.vote_average}</p>
-                <p className="text-gray-600">Revenue: ${movie.revenue}</p>
+                <div className="card-body">
+                  <h4 className="card-title">{movie.title}</h4>
+                  <div className="container">
+                    <div className="row">
+                      <div className="col-sm-4 metadata">
+                        <i className="fa fa-star" aria-hidden="true" />
+                        <p>{movie.rating}/10</p>
+                      </div>
+                      <div className="col-sm-8 metadata">{movie.genre}</div>
+                    </div>
+                  </div>
+                  <p className="card-text">{movie.overview}</p>
+                  <a
+                    className="trailer-preview"
+                    href={movie.trailerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <i className="fa fa-play" aria-hidden="true" />
+                  </a>
+                </div>
               </div>
-            ) : (
-              <p>Loading...</p>
-            )}
+            ))}
           </div>
         </div>
       </div>
