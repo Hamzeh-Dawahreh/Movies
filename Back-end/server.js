@@ -14,7 +14,7 @@ app.use(
 // Define your server endpoints
 app.get("/", (req, res) => {
   // Make the HTTP request to the API
-  const apiUrl = "https://api.themoviedb.org/3/movie/550";
+  const apiUrl = "https://api.themoviedb.org/3/movie/popular?";
   const apiKey = "f7c60082eff916bf6b71057813e68f3c";
 
   axios
@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
     })
     .then((response) => {
       // Handle the API response data
-      const data = response.data;
+      const data = response.data.results;
       res.json(data);
     })
     .catch((error) => {

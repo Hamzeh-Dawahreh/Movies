@@ -3,11 +3,24 @@ import axios from "axios";
 
 const MyComponent = () => {
   const [movies, setMovies] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredMovies, setFilteredMovies] = useState([]);
+  useEffect(() => {
+    // Filter movies based on search query
+    const filtered = movies.filter((movie) =>
+      movie.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredMovies(filtered);
+  }, [movies, searchQuery]);
 
   useEffect(() => {
-    // Make the HTTP request to the server when the component mounts
+    // Make the HTTP request to the server when the component mounts or searchQuery changes
     axios
-      .get("http://localhost:5000")
+      .get("http://localhost:5000", {
+        params: {
+          search: searchQuery, // Pass the search query as a parameter to the API
+        },
+      })
       .then((response) => {
         // Handle the response data
         setMovies(response.data);
@@ -16,17 +29,35 @@ const MyComponent = () => {
         // Handle any errors
         console.error(error);
       });
-  }, []);
+  }, [searchQuery]);
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+  };
 
   return (
     <>
       <br />
       <br />
       <br />
+
       <div className="container mx-auto py-8">
+        <div className="flex justify-center">
+          <input
+            type="text"
+            placeholder="Search movies..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              handleSearch(e.target.value);
+            }}
+          />
+        </div>
+        <br />
+        <br />
+        <br />
         <div className="max-w-lg mx-auto bg-white rounded-lg shadow-lg">
           <div className="wrapper">
-            {movies.map((movie) => (
+            {filteredMovies.map((movie) => (
               <div className="card" style={{ width: "18rem" }} key={movie.id}>
                 <img
                   className="card-img-top"
